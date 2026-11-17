@@ -1,4 +1,6 @@
 -r requirements.txt
-reportlab>=4
+# Newer ReportLab releases require Python 3.10 at import time.
+reportlab>=4,<4.3; python_version < '3.10'
+reportlab>=4; python_version >= '3.10'
 Pillow>=10
 PyYAML>=6

@@ -30,7 +30,8 @@ def main():
     args = parser.parse_args()
     dest = args.dest.expanduser().absolute()
     source = ROOT / 'draft-revise'
-    if dest.resolve() == source.resolve() or source.resolve() in dest.resolve().parents:
+    if (dest.resolve() == source.resolve() or source.resolve() in dest.resolve().parents
+            or dest.resolve() in source.resolve().parents):
         raise ValueError('Install target must be outside repository source')
     provenance = {'version': (ROOT / 'VERSION').read_text().strip(), 'commit': git('rev-parse', 'HEAD'),
                   'dirty': bool(git('status', '--porcelain')), 'source_repository': str(ROOT),
