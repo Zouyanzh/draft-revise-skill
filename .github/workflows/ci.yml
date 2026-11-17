@@ -1,0 +1,43 @@
+name: Test Codex skill
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -r requirements-dev.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci --ignore-scripts
+      - run: python tools/check_skill.py
+      - run: python draft-revise/scripts/selftest.py --output test-output
+      - run: python -m py_compile draft-revise/scripts/*.py tools/*.py
+      - run: node --check draft-revise/assets/review.js
+      - name: Report HTML and schema 2 feedback
+        run: |
+          node draft-revise/scripts/review_ui_test.cjs test-output/report/report_revised_v1.html test-output/report-feedback.json
+          python draft-revise/scripts/draft_revise.py feedback test-output/report/report_revised_v1.json test-output/report-feedback.json
+      - name: Slides HTML with local file restrictions
+        run: |
+          node draft-revise/scripts/review_ui_test.cjs test-output/slides/slides_revised_v1.html test-output/slides-feedback.json --file
+          python draft-revise/scripts/draft_revise.py feedback test-output/slides/slides_revised_v1.json test-output/slides-feedback.json
+      - name: Build and verify release archive
+        run: python tools/build_release.py

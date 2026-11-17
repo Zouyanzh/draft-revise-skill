@@ -1,0 +1,8 @@
+{
+  "name": "draft-revise-skill-maintenance",
+  "private": true,
+  "description": "DOM regression dependencies for the draft-revise Codex skill",
+  "devDependencies": {
+    "jsdom": "^26.1.0"
+  }
+}

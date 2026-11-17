@@ -1,0 +1,4 @@
+interface:
+  display_name: "draft revise"
+  short_description: "Revise comments with linked HTML review and pending feedback"
+  default_prompt: "Use $draft-revise to revise this PDF from the comments and create a linked HTML review with hierarchical contents, exact edit and sentence comparisons, and exportable pending opinions."

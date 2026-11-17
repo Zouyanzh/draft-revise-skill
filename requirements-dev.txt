@@ -1,0 +1,4 @@
+-r requirements.txt
+reportlab>=4
+Pillow>=10
+PyYAML>=6
